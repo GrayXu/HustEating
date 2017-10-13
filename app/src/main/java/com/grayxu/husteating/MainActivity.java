@@ -1,7 +1,9 @@
 package com.grayxu.husteating;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.amap.api.maps.MapView;
 
@@ -20,14 +22,31 @@ public class MainActivity extends AppCompatActivity {
             MainMap.init(mapView, this);
         }
 
+        initFastEat();//初始化主页浮动按钮
+
     }
 
+    /**
+     * 初始化主界面的浮动按钮，提供快速选择的功能
+     */
+    private void initFastEat(){
+        findViewById(R.id.ButtonFastEat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String nearestID = MainMap.getNearestID();
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("Name", nearestID);
+                startActivity(intent);
+            }
+        });
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mapView.onDestroy();
+        MainMap.stopLoc();
     }
     @Override
     protected void onResume() {

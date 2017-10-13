@@ -15,7 +15,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/ButtonFastEat"
             android:layout_width="85dp"
             android:layout_height="86dp"
             android:layout_gravity="center|bottom"
