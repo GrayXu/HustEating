@@ -5,6 +5,9 @@ import android.os.Bundle;
 
 import com.amap.api.maps.MapView;
 
+/**
+ * 主界面，即一开始进入的地图界面，进行食堂的初始选择
+ */
 public class MainActivity extends AppCompatActivity {
     MapView mapView = null;
     @Override

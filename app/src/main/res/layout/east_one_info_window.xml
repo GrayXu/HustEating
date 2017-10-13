@@ -8,7 +8,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="东一食堂\n两层餐厅"
+        android:text="东一食堂"
         android:background="?android:attr/selectableItemBackground"/>
+
+    <Button
+        android:id="@+id/buttonE12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="二楼餐厅" />
+
+    <Button
+        android:id="@+id/buttonE11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="一楼餐厅" />
 
 </LinearLayout>

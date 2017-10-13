@@ -11,4 +11,10 @@
         android:text="东三清真食堂"
         android:background="?android:attr/selectableItemBackground"/>
 
+    <Button
+        android:id="@+id/buttonE3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="进入食堂" />
+
 </LinearLayout>

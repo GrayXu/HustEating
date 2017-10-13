@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="EastThreeCanteens">
-        <item>一楼餐厅</item>
+    <string-array name="taste">
+        <item>辣</item>
+        <item>清淡</item>
     </string-array>
-    <string-array name="EastOneCanteens">
-        <item>一楼餐厅</item>
-        <item>二楼餐厅</item>
-    </string-array>
+
 </resources>

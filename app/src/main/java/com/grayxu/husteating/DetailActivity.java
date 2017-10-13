@@ -1,33 +1,103 @@
 package com.grayxu.husteating;
 
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.LinearLayout;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class DetailActivity extends AppCompatActivity {
+/**
+ * 进行具体推荐的详情界面活动
+ */
+public class DetailActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener, NumberPicker.OnScrollListener, NumberPicker.Formatter {
+
+    final static int MINMONEY = 3;
+    final static int MAXMONEY = 50;
+
+    private String tasteChosen;
+    private int moneyChosen;
+    private String canteenID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_activity);
         Intent intent = getIntent();
-        int canteenNums = intent.getIntExtra("CanteenNums", 0);
-        String name = intent.getStringExtra("Name");
-        LinearLayout ll = (LinearLayout) findViewById(R.id.setting);
+        canteenID = intent.getStringExtra("Name");
 
+        //初始化标题
+        initTitle(canteenID);
 
-        ((TextView) findViewById(R.id.titleTV)).setText(name);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        String[] canteenNames = getResources().getStringArray(R.array.EastOneCanteens);
+        //初始化口味的Spinner
+        initSpinner();
 
-        if (canteenNums != 0){
+        //价格选取器的初始化设置
+        initNumpicker();
+    }
 
-        } else {
-            ll.removeView(spinner);
+    /**
+     * 初始化口味的Spinner
+     */
+    private void initSpinner() {
+        ((Spinner) findViewById(R.id.spinner)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                tasteChosen = String.valueOf(adapterView.getItemAtPosition(i));
+                Log.i("onItemClick", "新选择的口味是" + tasteChosen);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    /**
+     * 初始化餐厅的名称作为标题
+     *
+     * @param canteenID 餐厅的代码
+     */
+    private void initTitle(String canteenID) {
+        String canteenName = "";
+        if (canteenID.equals("E11")) {
+            canteenName = "东一食堂 一楼";
+        } else if (canteenID.equals("E12")) {
+            canteenName = "东一食堂 二楼";
+        } else if (canteenID.equals("E3")) {
+            canteenName = "东三清真食堂";
         }
+        ((TextView) findViewById(R.id.titleTV)).setText(canteenName);//设置详情界面的标题
+    }
+
+    private void initNumpicker(){
+        NumberPicker moneyPicker = ((NumberPicker) findViewById(R.id.moneyPicker));
+        moneyPicker.setFormatter(this);
+        moneyPicker.setOnValueChangedListener(this);
+        moneyPicker.setOnScrollListener(this);
+        moneyPicker.setMaxValue(MAXMONEY);
+        moneyPicker.setMinValue(MINMONEY);
+        moneyPicker.setValue(10);//TODO： 可以设置为来自个人历史记录
+        moneyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+    }
+
+    @Override
+    public String format(int i) {
+        return String.valueOf(i);
+    }
+
+    @Override
+    public void onScrollStateChange(NumberPicker numberPicker, int i) {
+
+    }
+
+    @Override
+    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+        DetailActivity.this.moneyChosen = i1;
+        Log.i("onValueChange", "新选择的价格为" + DetailActivity.this.moneyChosen);
     }
 }
