@@ -2,6 +2,7 @@ package com.grayxu.husteating;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +11,15 @@ import android.widget.Button;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.CoordinateConverter;
-import com.amap.api.location.DPoint;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.model.Text;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,8 @@ public class MainMap {
     private static Activity activity;
     private static LatLng myLatLng;
     private static AMapLocationClient mLocationClient;
+    private static boolean isFirst = true;//用来进行刚打开的时候进行地图镜头放大
+
     /**
      * 作为工具类的初始方法，必须最早调用
      *
@@ -46,15 +49,15 @@ public class MainMap {
         LatLng latLngEastThree = new LatLng(30.510734, 114.420424);
         locList.add(latLngEastOne);
         locList.add(latLngEastThree);
-        AMap aMap = mapView.getMap();
+
+        final AMap aMap = mapView.getMap();
         aMap.setMyLocationEnabled(true);
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
 
         //控制蓝点逻辑
         MyLocationStyle myLocationStyle;
         myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类（即默认
         myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）默认执行此种模式。
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE) ;//定位一次，且将视角移动到地图中心点。
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         aMap.getUiSettings().setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
         aMap.getUiSettings().setCompassEnabled(true);
@@ -121,8 +124,13 @@ public class MainMap {
             public void onLocationChanged(AMapLocation aMapLocation) {
                 if (aMapLocation != null) {
                     if (aMapLocation.getErrorCode() == 0) {
-                        myLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                        myLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());//会一直进行定位并且更新
                         Log.v("成功获得自己的经纬度",myLatLng.latitude+" "+myLatLng.longitude);
+
+                        if (isFirst){
+                            aMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(myLatLng.latitude, myLatLng.longitude), 17, 0, 0)));
+                            isFirst = false;
+                        }
                     } else {
                         //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                         Log.e("AmapError", "location Error, ErrCode:"
@@ -135,6 +143,11 @@ public class MainMap {
             }
         });
         mLocationClient.startLocation();
+        Location aMapLocation = aMap.getMyLocation();
+        if (aMapLocation != null){
+            Log.d("init MainMap", "aMapLocation被正常创建");
+        }
+//        aMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(new LatLng(myLatLng.latitude, myLatLng.longitude), 17, 0, 0)));
     }
 
     /**
@@ -163,7 +176,7 @@ public class MainMap {
     }
 
     public static void stopLoc(){
-        mLocationClient.startLocation();
+        mLocationClient.stopLocation();
     }
 
 

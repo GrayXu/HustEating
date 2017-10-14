@@ -47,7 +47,9 @@ public class DetailActivity extends AppCompatActivity implements NumberPicker.On
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 tasteChosen = String.valueOf(adapterView.getItemAtPosition(i));
-                Log.i("onItemClick", "新选择的口味是" + tasteChosen);
+                Log.v("onItemClick", "新选择的口味是" + tasteChosen);
+                //TODO： 根据口味而改变色调
+
             }
 
             @Override

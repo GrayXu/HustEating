@@ -43,28 +43,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
         mapView.onDestroy();
         MainMap.stopLoc();
+        super.onDestroy();
     }
     @Override
     protected void onResume() {
-        super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mapView.onResume();
+        super.onResume();
     }
     @Override
     protected void onPause() {
-        super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         mapView.onPause();
+        super.onPause();
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
         mapView.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
 }

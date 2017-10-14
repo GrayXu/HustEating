@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <Space
         android:layout_width="match_parent"
@@ -12,8 +12,8 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="10dp"
-        android:background="@color/cardview_light_background">
+        android:background="@color/cardview_light_background"
+        app:cardElevation="10dp">
 
         <TextView
             android:id="@+id/titleTV"
@@ -43,27 +43,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="10">
 
                 <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.01" />
+                    android:layout_weight="1.2" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="44dp"
+                    android:gravity="center"
                     android:text="口味："
-                    android:textSize="22sp"
-                    android:gravity="center"/>
+                    android:textSize="22sp" />
 
                 <Spinner
                     android:id="@+id/spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.07"
-                    android:entries="@array/taste"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:entries="@array/taste" />
 
                 <Space
                     android:layout_width="wrap_content"
@@ -83,14 +84,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="10">
 
                 <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.09" />
+                    android:layout_weight="1.2" />
 
                 <TextView
+                    android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -100,23 +102,43 @@
                 <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.10" />
+                    android:layout_weight="1.2" />
 
                 <NumberPicker
                     android:id="@+id/moneyPicker"
                     android:layout_width="40dp"
                     android:layout_height="80dp" />
 
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6.36" />
+
 
             </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="6dp"
+                android:layout_height="4dp"
                 android:layout_weight="0.01" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="15dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/buttonInfo"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="right|bottom"
+        android:clickable="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/light"/>
 
 
 </LinearLayout>
