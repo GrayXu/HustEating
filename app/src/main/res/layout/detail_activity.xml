@@ -134,11 +134,11 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_gravity="right|bottom"
-        android:clickable="true"
-        android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
         app:fabSize="mini"
-        app:srcCompat="@drawable/light"/>
+        app:srcCompat="@drawable/light" />
 
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.grayxu.husteating;
+package com.grayxu.husteating.UI;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,8 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.grayxu.husteating.R;
+
 /**
  * 进行具体推荐的详情界面活动
  */
@@ -19,7 +21,7 @@ public class DetailActivity extends AppCompatActivity implements NumberPicker.On
     final static int MAXMONEY = 50;
 
     private String tasteChosen;
-    private int moneyChosen;
+    private int moneyChosen = 10;//default ->10
     private String canteenID;
 
     @Override
@@ -37,6 +39,19 @@ public class DetailActivity extends AppCompatActivity implements NumberPicker.On
 
         //价格选取器的初始化设置
         initNumpicker();
+
+        //进入指定餐厅下的餐肴推荐
+        findViewById(R.id.buttonInfo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DetailActivity.this, InfoActivity.class);
+                //添加查询所需的信息
+                intent.putExtra("Name", canteenID);
+                intent.putExtra("moneyChosen", moneyChosen);
+                intent.putExtra("tasteChosen", tasteChosen);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

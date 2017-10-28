@@ -3,6 +3,8 @@
     <string-array name="taste">
         <item>辣</item>
         <item>清淡</item>
+        <item>香</item>
+        <item>甜</item>
     </string-array>
 
 </resources>

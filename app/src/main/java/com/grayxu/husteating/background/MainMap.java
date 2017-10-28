@@ -1,4 +1,4 @@
-package com.grayxu.husteating;
+package com.grayxu.husteating.background;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +19,8 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.amap.api.maps.model.Text;
+import com.grayxu.husteating.R;
+import com.grayxu.husteating.UI.DetailActivity;
 
 import java.util.ArrayList;
 
