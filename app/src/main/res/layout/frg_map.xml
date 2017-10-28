@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/ButtonFastEat"
+            app:backgroundTint="@color/colorAccent"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/eat"
+            android:layout_width="85dp"
+            android:layout_height="86dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="40dp"
+            android:clickable="true" />
+    </com.amap.api.maps.MapView>
+</LinearLayout>

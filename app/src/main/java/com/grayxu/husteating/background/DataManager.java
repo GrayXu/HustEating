@@ -92,6 +92,7 @@ public class DataManager {
                 food.setPrice(Float.valueOf(strs[2]));
                 food.setMeatIndex(Integer.valueOf(strs[3]));
                 food.setTaste(strs[4]);
+                food.setStaple(Boolean.valueOf(strs[5]));
                 food.save();//保存这张表
             }
         }

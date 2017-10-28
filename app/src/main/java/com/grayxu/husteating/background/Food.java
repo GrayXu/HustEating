@@ -14,9 +14,19 @@ public class Food extends DataSupport {
     private int meatIndex;//肉指数 5分满分
     private String taste;//口味
     private int hotIndex;//热门指数（越高越优先）5分满分
+    private boolean isStaple;//是否为主食
 
     public void setCanteen(String canteen) {
         this.canteen = canteen;
+    }
+
+    public void setStaple(boolean staple) {
+        isStaple = staple;
+    }
+
+    public boolean isStaple() {
+
+        return isStaple;
     }
 
     public String getCanteen() {
