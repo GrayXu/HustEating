@@ -6,10 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.grayxu.husteating.R;
+import com.grayxu.husteating.background.Canteens;
+
+import java.util.Iterator;
 
 public class InfoActivity extends AppCompatActivity {
 
-    private String canteenID;
+    private String canteenName;
     private String tasteChosen;
     private int moneyChosen;
 
@@ -18,10 +21,7 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
         Intent intent = getIntent();
-        canteenID = intent.getStringExtra("Name");
-        moneyChosen = intent.getIntExtra("moneyChosen", 10);
-        tasteChosen = intent.getStringExtra("tasteChosen");
-
-        ((TextView) findViewById(R.id.infoTV)).setText(canteenID + "\n" + moneyChosen + "\n" + tasteChosen);
+        canteenName = intent.getStringExtra("Name");
+        ((TextView) findViewById(R.id.titleTV)).setText(canteenName);
     }
 }

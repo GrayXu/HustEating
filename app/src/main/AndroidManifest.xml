@@ -41,9 +41,6 @@
         <service android:name="com.amap.api.location.APSService" />
 
         <activity
-            android:name=".UI.SettingFragment"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".UI.InfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

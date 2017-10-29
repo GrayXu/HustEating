@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SettingFragment settingFragment;
     private MapFragment mapFragment;
     private AlertDialog.Builder builder;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.add(R.id.fragment_content, settingFragment, "SETTING");
         fragmentTransaction.show(mapFragment).hide(settingFragment);
         fragmentTransaction.commit();
+
+        toolbar.setTitle("食堂地图");
     }
 
     /**
@@ -70,8 +73,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * 初始化抽屉布局
      */
     private void initDrawer(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -115,9 +119,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_map){
             fragmentTransaction.show(mapFragment).hide(settingFragment);
             fragmentTransaction.commit();
+            toolbar.setTitle("食堂地图");
         } else if (id == R.id.nav_setting) {
             fragmentTransaction.show(settingFragment).hide(mapFragment);
             fragmentTransaction.commit();
+            toolbar.setTitle("用户设置");
         } else if (id == R.id.nav_share) {
             //TODO: 给复制个下载链接
         } else if (id == R.id.nav_send) {
