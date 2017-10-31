@@ -2,6 +2,7 @@ package com.grayxu.husteating.UI;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.support.v7.widget.Toolbar;
 
 import com.grayxu.husteating.R;
 
@@ -71,7 +73,19 @@ public class SettingFragment extends Fragment implements NumberPicker.OnValueCha
                 String tasteChosen = String.valueOf(adapterView.getItemAtPosition(i));
                 Log.v("onItemClick", "新选择的口味是" + tasteChosen);
                 preferences.edit().putString("tasteChosen", tasteChosen).apply();
-                //TODO： 根据口味而改变ActionBar的色调
+
+                Toolbar toolbar = ((MainActivity) getActivity()).getToolbar();
+                String color = "0";
+                if (tasteChosen.equals("辣")){
+                    color = "#FF0000";
+                } else if (tasteChosen.equals("清淡")){
+                    color = "#BFEFFF";
+                } else if (tasteChosen.equals("香")){
+                    color = "#EEC900";
+                } else if (tasteChosen.equals("甜")){
+                    color = "#FFAEB9";
+                }
+                toolbar.setBackgroundColor(Color.parseColor(color));
             }
 
             @Override

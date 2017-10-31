@@ -32,7 +32,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SettingFragment settingFragment;
     private MapFragment mapFragment;
     private AlertDialog.Builder builder;
+
     private Toolbar toolbar;
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String tasteChosen = preferences.getString("tasteChosen", "辣");
+        int color = 0;
+        if (tasteChosen.equals("辣")){
+            color = 16711680;
+        } else if (tasteChosen.equals("清淡")){
+            color = 12578815;
+        } else if (tasteChosen.equals("香")){
+            color = 15649024;
+        } else if (tasteChosen.equals("甜")){
+            color = 16756409;
+        }
+        toolbar.setBackgroundColor(color);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
