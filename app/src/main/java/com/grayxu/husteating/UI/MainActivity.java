@@ -2,8 +2,9 @@ package com.grayxu.husteating.UI;
 
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,11 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.grayxu.husteating.background.DataManager;
-import com.grayxu.husteating.background.MainMap;
 import com.grayxu.husteating.R;
+import com.grayxu.husteating.background.PermissionTool;
 
 import java.io.IOException;
 
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AlertDialog.Builder builder;
 
     private Toolbar toolbar;
+
     public Toolbar getToolbar() {
         return toolbar;
     }
@@ -42,6 +43,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        //动态申请所有所需要的敏感权限
+        if (Build.VERSION.SDK_INT >= 23) {
+            Log.i("onCreate", "系统为6.0及以上");
+            PermissionTool.init(this);
+            PermissionTool.checkPermission();//检查动态权限设置是否正常
+        }
+
         setContentView(R.layout.activity_main);
 
         initDrawer();//初始化抽屉
@@ -58,13 +67,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setTitle("食堂地图");
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionTool.afterRequest(requestCode, grantResults);
+    }
+
+
     /**
      * 初始化制作者信息包括反馈方式的弹出框
      */
-    private void initDialog(){
+    private void initDialog() {
         builder = new AlertDialog.Builder(this);
         builder.setTitle("HUST Eating");
-        builder.setMessage("Email:  grayxu@hust.edu.cn\n欢迎使用者反馈任何信息"+new String(Character.toChars(0x1F64F)));
+        builder.setMessage("Email:  grayxu@hust.edu.cn\n欢迎使用者反馈任何信息" + new String(Character.toChars(0x1F64F)));
         builder.setCancelable(false);
         builder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
             @Override
@@ -76,20 +93,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * 初始化抽屉布局
      */
-    private void initDrawer(){
+    private void initDrawer() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         String tasteChosen = preferences.getString("tasteChosen", "辣");
         int color = 0;
-        if (tasteChosen.equals("辣")){
+        if (tasteChosen.equals("辣")) {
             color = 16711680;
-        } else if (tasteChosen.equals("清淡")){
+        } else if (tasteChosen.equals("清淡")) {
             color = 12578815;
-        } else if (tasteChosen.equals("香")){
+        } else if (tasteChosen.equals("香")) {
             color = 15649024;
-        } else if (tasteChosen.equals("甜")){
+        } else if (tasteChosen.equals("甜")) {
             color = 16756409;
         }
         toolbar.setBackgroundColor(color);
@@ -108,11 +125,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * 检查是否第一次打开本程序，若是则初始化数据库
      */
     private void initDB() {
+        Log.i("initDB","更新了数据库");
         SharedPreferences preferences = getPreferences(0);
         boolean isFirst = preferences.getBoolean("isFirst", false);
         if (isFirst) {
             try {
-                DataManager.getDataManger().init(this);
+                DataManager.getInstance().init(this);
                 preferences.edit().putBoolean("isFirst", false).apply();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -133,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         fragmentTransaction = getFragmentManager().beginTransaction();
 
-        if (id == R.id.nav_map){
+        if (id == R.id.nav_map) {
             fragmentTransaction.show(mapFragment).hide(settingFragment);
             fragmentTransaction.commit();
             toolbar.setTitle("食堂地图");

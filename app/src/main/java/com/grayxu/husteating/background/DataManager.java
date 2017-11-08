@@ -27,16 +27,20 @@ import java.util.Map;
  */
 public class DataManager {
 
-    private DataManager(){
 
+    private DataManager() {
+    }
+
+    private static class InnerHelper {
+        private final static DataManager dataManager = new DataManager();
     }
 
     //单例模式的实现
-    public static DataManager getDataManger() throws IOException {
-        DataManager dataManager = new DataManager();
+    public static DataManager getInstance() throws IOException {
+
         Connector.getDatabase();
 //        dataManager.init();
-        return dataManager;
+        return InnerHelper.dataManager;
     }
 
     //这个静态变量存储的是所有食堂的数据
@@ -45,6 +49,7 @@ public class DataManager {
 
     /**
      * 存储数据进入InfoMap这个HashMap的操作逻辑
+     *
      * @param activity 本参数传入以便获得raw文本数据（可能传入流的引用更符合设计模式
      * @throws IOException
      */
@@ -76,15 +81,15 @@ public class DataManager {
     /**
      * 把HashMap中的食物属性信息存入LiteSQL数据库中
      */
-    private void addDataAll(){
+    private void addDataAll() {
         Iterator iteratorMap = infoMap.entrySet().iterator();
-        while(iteratorMap.hasNext()){
+        while (iteratorMap.hasNext()) {
             Map.Entry entry = (Map.Entry) iteratorMap.next();
             String canteenName = (String) entry.getKey();
             ArrayList<String[]> foodList = (ArrayList<String[]>) entry.getValue();
             Iterator iteratorList = foodList.iterator();
 
-            while (iteratorList.hasNext()){//遍历这个ArrayList
+            while (iteratorList.hasNext()) {//遍历这个ArrayList
                 String[] strs = (String[]) iteratorList.next();
                 Food food = new Food();
                 food.setCanteen(canteenName);
@@ -100,10 +105,11 @@ public class DataManager {
 
     /**
      * 外部通过本方法来获得指定餐厅的食物列表（经过LitePal完美的包装
+     *
      * @param canteenName 餐厅的名字
      * @return
      */
-    public List<Food> getFoodsList(String canteenName){
+    public List<Food> getFoodsList(String canteenName) {
         return DataSupport.select("canteen", canteenName).find(Food.class);
     }
 

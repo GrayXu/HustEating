@@ -17,6 +17,11 @@ import android.support.v7.widget.Toolbar;
 
 import com.grayxu.husteating.R;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+
 /**
  * 进行具体推荐的详情界面活动
  */
@@ -46,7 +51,11 @@ public class SettingFragment extends Fragment implements NumberPicker.OnValueCha
         //初始化口味的Spinner
         initSpinner((Spinner) view.findViewById(R.id.spinner));
         //价格选取器的初始化设置
-        initNumPicker((NumberPicker) view.findViewById(R.id.moneyPicker));
+        initNumPicker(new ArrayList<>(Arrays.asList(
+                ((NumberPicker) view.findViewById(R.id.moneyPickerBreakfast)),
+                ((NumberPicker) view.findViewById(R.id.moneyPickerLunch)),
+                ((NumberPicker) view.findViewById(R.id.moneyPickerDinner))
+        )));
     }
 
     /**
@@ -56,13 +65,13 @@ public class SettingFragment extends Fragment implements NumberPicker.OnValueCha
 
         String tasteHistory = preferences.getString("tasteChosen", "辣");//辣是初始值
         int posSpinner = 0;
-        if (tasteHistory.equals("辣")){
+        if (tasteHistory.equals("辣")) {
             posSpinner = 0;
-        }else if (tasteHistory.equals("清淡")){
+        } else if (tasteHistory.equals("清淡")) {
             posSpinner = 1;
-        }else if (tasteHistory.equals("香")){
+        } else if (tasteHistory.equals("香")) {
             posSpinner = 2;
-        }else if (tasteHistory.equals("甜")){
+        } else if (tasteHistory.equals("甜")) {
             posSpinner = 3;
         }
         spinner.setSelection(posSpinner);
@@ -76,13 +85,13 @@ public class SettingFragment extends Fragment implements NumberPicker.OnValueCha
 
                 Toolbar toolbar = ((MainActivity) getActivity()).getToolbar();
                 String color = "0";
-                if (tasteChosen.equals("辣")){
+                if (tasteChosen.equals("辣")) {
                     color = "#FF0000";
-                } else if (tasteChosen.equals("清淡")){
+                } else if (tasteChosen.equals("清淡")) {
                     color = "#BFEFFF";
-                } else if (tasteChosen.equals("香")){
+                } else if (tasteChosen.equals("香")) {
                     color = "#EEC900";
-                } else if (tasteChosen.equals("甜")){
+                } else if (tasteChosen.equals("甜")) {
                     color = "#FFAEB9";
                 }
                 toolbar.setBackgroundColor(Color.parseColor(color));
@@ -98,16 +107,23 @@ public class SettingFragment extends Fragment implements NumberPicker.OnValueCha
     /**
      * 初始化传入的moneyPicker
      *
-     * @param moneyPicker
+     * @param numberPickerArrayList 需要初始化的NumPicker
      */
-    private void initNumPicker(NumberPicker moneyPicker) {
-        moneyPicker.setFormatter(this);
-        moneyPicker.setOnValueChangedListener(this);
-        moneyPicker.setOnScrollListener(this);
-        moneyPicker.setMaxValue(MAXMONEY);
-        moneyPicker.setMinValue(MINMONEY);
-        moneyPicker.setValue(preferences.getInt("moneyChosen", 10));//默认为10
-        moneyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+    private void initNumPicker(ArrayList<NumberPicker> numberPickerArrayList) {
+        Iterator iterator = numberPickerArrayList.iterator();
+        while (iterator.hasNext()) {
+            NumberPicker moneyPicker = (NumberPicker) iterator.next();
+            moneyPicker.setFormatter(this);
+            moneyPicker.setOnValueChangedListener(this);
+            moneyPicker.setOnScrollListener(this);
+            moneyPicker.setMaxValue(MAXMONEY);
+            moneyPicker.setMinValue(MINMONEY);
+            moneyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        }
+        numberPickerArrayList.get(0).setValue(preferences.getInt("moneyBreakfastChosen", 5));//早餐默认为5
+        numberPickerArrayList.get(1).setValue(preferences.getInt("moneyLunchChosen", 10));//午饭默认为10
+        numberPickerArrayList.get(2).setValue(preferences.getInt("moneyDinnerChosen", 12));//早餐默认为12
+
     }
 
     @Override
@@ -122,7 +138,14 @@ public class SettingFragment extends Fragment implements NumberPicker.OnValueCha
 
     @Override
     public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-        preferences.edit().putInt("moneyChosen", i1).apply();//保存picker的值到SP中
-        Log.i("onValueChange", "新选择的价格为" + i1);
+        //保存picker的值到SP中
+        switch (numberPicker.getId()) {
+            case R.id.moneyPickerBreakfast:
+                preferences.edit().putInt("moneyBreakfastChosen", i1).apply();
+            case R.id.moneyPickerLunch:
+                preferences.edit().putInt("moneyLunchChosen", i1).apply();
+            case R.id.moneyPickerDinner:
+                preferences.edit().putInt("moneyDinnerChosen", i1).apply();
+        }
     }
 }

@@ -17,23 +17,30 @@ import java.util.List;
 public class PushManager {
 
     private SharedPreferences preferences;
-    private List<Food> allFoodList;
-
+    private final static PushManager pushManager = new PushManager();
     private PushManager() {
     }
 
-    public static PushManager getPushManager(SharedPreferences preferences, List<Food> allFoodList) {
-        PushManager pushManager = new PushManager();
+    public static void initSP(SharedPreferences preferences){
         pushManager.preferences = preferences;
-        pushManager.allFoodList = allFoodList;
+    }
+
+
+    public static PushManager getInstance() {
         return pushManager;
     }
 
-    public ArrayList<Food> getResult() {
+    /**
+     * 获得推荐的结果
+     * @param allFoodList 传入的所有符合条件的食物
+     * @return
+     */
+    public ArrayList<Food> getResult(List<Food> allFoodList) {
+
         ArrayList<Food> foodList = new ArrayList<>();
 
         Calendar c = Calendar.getInstance();
-        //key为当前推荐的日期，方便进行存储今天记录。
+        //key为当前推荐的日期，方便进行存储今天记录。格式为20171102
         final String TodayKey = String.valueOf(c.get(Calendar.YEAR)) + String.valueOf(c.get(Calendar.MONTH)) + String.valueOf(c.get(Calendar.DATE));
         c.add(c.DATE, 1);
         final String YesterdayKey = String.valueOf(c.get(Calendar.YEAR)) + String.valueOf(c.get(Calendar.MONTH)) + String.valueOf(c.get(Calendar.DATE));
@@ -41,9 +48,11 @@ public class PushManager {
         final String BeforeYKey = String.valueOf(c.get(Calendar.YEAR)) + String.valueOf(c.get(Calendar.MONTH)) + String.valueOf(c.get(Calendar.DATE));
         Log.d("检测string key", TodayKey + " " + YesterdayKey + " " + BeforeYKey);
 
-        SharedPreferences.Editor editor = preferences.edit();
-        int totalMeat = preferences.getInt(TodayKey, 0) + preferences.getInt(YesterdayKey, 0) + preferences.getInt(BeforeYKey, 0);
+//        SharedPreferences.Editor editor = preferences.edit();
+        int totalMeat = preferences.getInt(TodayKey, 0) + preferences.getInt(YesterdayKey, 0) + preferences.getInt(BeforeYKey, 0);//仅三天的吃量
         //MeatIndex的上限设置为20，尽量不会让其超过
+
+        //TODO: 推荐算法实现位置
 
 
 
@@ -55,6 +64,6 @@ public class PushManager {
      * @param foodList
      */
     public void confirmFood(ArrayList<Food> foodList){
-        //update data
+        //update local database
     }
 }

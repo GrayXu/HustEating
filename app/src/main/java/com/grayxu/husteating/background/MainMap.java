@@ -30,7 +30,6 @@ import java.util.Iterator;
 /**
  * Created by Administrator on 2017/10/11.
  * 这是用来初始化地图的工具类
- * TODO:需要增加多食堂添加的便利性
  */
 
 public class MainMap {
@@ -184,12 +183,10 @@ public class MainMap {
         double latitude = latLngIn.latitude;
         double longtitude = latLngIn.longitude;
 
-        //magic numbers是华科的边界经纬度
+        //这些magic numbers是华科的边界经纬度
         if (latitude > 30.5246628024 || latitude < 30.5029695646 || longtitude > 114.4415760040 || longtitude < 114.3969869614) {
-            Toast.makeText(activity, "您怕是不在华科范围内，本应用目前只面向华科食堂。", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "您怕是不在华科范围内，本应用目前只面向华科食堂开放。", Toast.LENGTH_LONG).show();
         }
-
-        //TODO: 检查用户位置是否在华科内
     }
 
     /**
@@ -218,7 +215,7 @@ public class MainMap {
         }
 
         int index = locList.indexOf(nearestLatLng);
-        //TODO: 同距离评判逻辑？？需要新的推荐逻辑 10.29到此为止
+        //TODO: 同距离评判逻辑？？需要新的推荐逻辑
         switch (index) {
             case 0:
                 return "E11";

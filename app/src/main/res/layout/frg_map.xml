@@ -11,13 +11,14 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/ButtonFastEat"
-            app:backgroundTint="@color/colorAccent"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/eat"
             android:layout_width="85dp"
             android:layout_height="86dp"
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="40dp"
-            android:clickable="true" />
+            android:clickable="true"
+            app:backgroundTint="@color/colorAccent"
+            app:elevation="12dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/main" />
     </com.amap.api.maps.MapView>
 </LinearLayout>
