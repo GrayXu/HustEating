@@ -21,6 +21,10 @@ public class PushManager {
     private PushManager() {
     }
 
+    /**
+     * 外界传入SP，让内部可以获得键值对信息
+     * @param preferences
+     */
     public static void initSP(SharedPreferences preferences){
         pushManager.preferences = preferences;
     }

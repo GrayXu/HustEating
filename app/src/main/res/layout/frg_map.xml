@@ -20,5 +20,16 @@
             app:elevation="12dp"
             app:fabSize="mini"
             app:srcCompat="@drawable/main" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/ButtonLoc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/loc" />
     </com.amap.api.maps.MapView>
 </LinearLayout>

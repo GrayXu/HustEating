@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.amap.api.maps.MapView;
 import com.grayxu.husteating.R;
@@ -16,9 +17,12 @@ import com.grayxu.husteating.background.MainMap;
  * Created by Administrator on 2017/10/28.
  */
 
-public class MapFragment extends Fragment{
+/**
+ * 地图碎片
+ */
+public class MapFragment extends Fragment {
 
-    private View view;
+    private View view;//用来获得控件的view
     private MapView mapView;
 
     @Nullable
@@ -38,15 +42,31 @@ public class MapFragment extends Fragment{
      * 初始化主界面的浮动按钮，提供快速选择的功能
      */
     private void initFastEat(View view) {
-        view.findViewById(R.id.ButtonFastEat).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String nearestID = MainMap.getNearestID();
-                Intent intent = new Intent(getActivity(), InfoActivity.class);
-                intent.putExtra("Name", nearestID);
-                startActivity(intent);
+        view.findViewById(R.id.ButtonFastEat).setOnClickListener(new FabButtonListener());
+
+    }
+
+    /**
+     * FabButtonListener 一个内部类负责完成浮动按钮的监听器逻辑
+     */
+    class FabButtonListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == R.id.ButtonFastEat){
+                String resultID = MainMap.getCanteenResultID();//摇出的食堂结果（是一个食堂的ID）
+                if (resultID == null) { // 没有获取到有效的ID
+                    Toast.makeText(getActivity(), "没有定位权限", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getActivity(), InfoActivity.class);
+                    intent.putExtra("Name", resultID);//把食堂ID作为参数传入
+                    startActivity(intent);
+                }
+            } else if (view.getId() == R.id.ButtonLoc){
+                //如果是定位按钮，就移动镜头
+                MainMap.moveCamera();
             }
-        });
+        }
     }
 
     @Override

@@ -1,8 +1,13 @@
 package com.grayxu.husteating.UI;
 
+import android.Manifest;
 import android.app.FragmentTransaction;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,22 +21,27 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.grayxu.husteating.background.DataManager;
 import com.grayxu.husteating.R;
-import com.grayxu.husteating.background.PermissionTool;
 
 import java.io.IOException;
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 本类为主活动，管理这个界面下多碎片的切换，以及后台的操作
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , EasyPermissions.PermissionCallbacks{
 
     private FragmentTransaction fragmentTransaction;
     private SettingFragment settingFragment;
     private MapFragment mapFragment;
     private AlertDialog.Builder builder;
+    private static final int num = 123;
 
     private Toolbar toolbar;
 
@@ -47,15 +57,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //动态申请所有所需要的敏感权限
         if (Build.VERSION.SDK_INT >= 23) {
             Log.i("onCreate", "系统为6.0及以上");
-            PermissionTool.init(this);
-            PermissionTool.checkPermission();//检查动态权限设置是否正常
+            requireSomePermission();
         }
 
         setContentView(R.layout.activity_main);
 
         initDrawer();//初始化抽屉
-        initDB();//检查是否第一次打开本程序，若是则初始化数据库
+
+        initDB();//检查是否第一次打开本程序，若是则初始化数据库 (应该有权限后才能初始化？？
+
         initDialog();//初始化制作者信息包括反馈方式的弹出框
+
         fragmentTransaction = getFragmentManager().beginTransaction();
         mapFragment = new MapFragment();
         settingFragment = new SettingFragment();
@@ -68,11 +80,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionTool.afterRequest(requestCode, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        PermissionTool.afterRequest(requestCode, permissions, grantResults);
+//    }
 
 
     /**
@@ -98,18 +110,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        //初始化的时候载入toolBar的颜色
         String tasteChosen = preferences.getString("tasteChosen", "辣");
-        int color = 0;
+        String color = "0";
         if (tasteChosen.equals("辣")) {
-            color = 16711680;
+            color = "#FF0000";
         } else if (tasteChosen.equals("清淡")) {
-            color = 12578815;
+            color = "#BFEFFF";
         } else if (tasteChosen.equals("香")) {
-            color = 15649024;
+            color = "#EEC900";
         } else if (tasteChosen.equals("甜")) {
-            color = 16756409;
+            color = "#FFAEB9";
         }
-        toolbar.setBackgroundColor(color);
+        toolbar.setBackgroundColor(Color.parseColor(color));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,10 +138,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * 检查是否第一次打开本程序，若是则初始化数据库
      */
     private void initDB() {
-        Log.i("initDB","更新了数据库");
+        Log.i("initDB", "检查数据库");
         SharedPreferences preferences = getPreferences(0);
         boolean isFirst = preferences.getBoolean("isFirst", false);
         if (isFirst) {
+            Log.i("initDB", "初始化数据库");
             try {
                 DataManager.getInstance().init(this);
                 preferences.edit().putBoolean("isFirst", false).apply();
@@ -160,7 +174,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragmentTransaction.commit();
             toolbar.setTitle("用户设置");
         } else if (id == R.id.nav_share) {
-            //TODO: 给复制个下载链接
+
+            String link = getString(R.string.link);
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(ClipData.newPlainText("newPlainTextLabel", link));
+            Toast.makeText(this, "已经复制下载链接到剪切板中", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
             builder.show();
         }
@@ -192,6 +210,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    //以下为框架申请权限时用到的回调函数
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        Log.d("onPermissionsGranted","onPermissionsGranted");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Log.d("onPermissionsDenied","onPermissionsDenied");
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        //??
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @AfterPermissionGranted(num)
+    private void requireSomePermission() {
+        String[] perms = {
+                // 把你想要申请的权限放进这里就行，注意用逗号隔开
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_PHONE_STATE,
+        };
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            Log.i("requireSomePermission", "Permissions Granted!");
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "",
+                    num, perms);
         }
     }
 }
