@@ -35,7 +35,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 /**
  * 本类为主活动，管理这个界面下多碎片的切换，以及后台的操作
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener , EasyPermissions.PermissionCallbacks{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
 
     private FragmentTransaction fragmentTransaction;
     private SettingFragment settingFragment;
@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.i("initDB", "检查数据库");
         SharedPreferences preferences = getPreferences(0);
         boolean isFirst = preferences.getBoolean("isFirst", false);
+
         if (isFirst) {
             Log.i("initDB", "初始化数据库");
             try {
@@ -150,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
         }
+
     }
 
     @Override
@@ -216,12 +218,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //以下为框架申请权限时用到的回调函数
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        Log.d("onPermissionsGranted","onPermissionsGranted");
+        Log.d("onPermissionsGranted", "onPermissionsGranted");
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        Log.d("onPermissionsDenied","onPermissionsDenied");
+        Log.d("onPermissionsDenied", "onPermissionsDenied");
     }
 
     @Override

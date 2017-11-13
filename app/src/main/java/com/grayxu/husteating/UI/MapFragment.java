@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class MapFragment extends Fragment {
      */
     private void initFastEat(View view) {
         view.findViewById(R.id.ButtonFastEat).setOnClickListener(new FabButtonListener());
-
+        view.findViewById(R.id.ButtonLoc).setOnClickListener(new FabButtonListener());
     }
 
     /**
@@ -54,6 +55,7 @@ public class MapFragment extends Fragment {
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.ButtonFastEat){
+                Log.d("FabButtonListener", "吃饭按钮被按下");
                 String resultID = MainMap.getCanteenResultID();//摇出的食堂结果（是一个食堂的ID）
                 if (resultID == null) { // 没有获取到有效的ID
                     Toast.makeText(getActivity(), "没有定位权限", Toast.LENGTH_SHORT).show();
@@ -63,6 +65,7 @@ public class MapFragment extends Fragment {
                     startActivity(intent);
                 }
             } else if (view.getId() == R.id.ButtonLoc){
+                Log.d("FabButtonListener", "定位按钮被按下");
                 //如果是定位按钮，就移动镜头
                 MainMap.moveCamera();
             }

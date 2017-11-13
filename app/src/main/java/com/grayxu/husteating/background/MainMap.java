@@ -183,9 +183,9 @@ public class MainMap {
 
         UiSettings uiSettings = aMap.getUiSettings();
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
-        uiSettings.setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
+
+        uiSettings.setMyLocationButtonEnabled(false);//设置默认定位按钮是否显示，非必需设置。
         uiSettings.setCompassEnabled(true);//开启指南针
-        uiSettings.setZoomControlsEnabled(false);//关闭定位键，才能有自定义的定位键
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
     }
 
