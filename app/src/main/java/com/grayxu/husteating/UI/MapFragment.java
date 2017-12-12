@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.amap.api.maps.MapView;
@@ -19,7 +20,7 @@ import com.grayxu.husteating.background.MainMap;
  */
 
 /**
- * 地图碎片
+ * MapFragment
  */
 public class MapFragment extends Fragment {
 
@@ -61,6 +62,7 @@ public class MapFragment extends Fragment {
                     Toast.makeText(getActivity(), "没有定位权限", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(getActivity(), InfoActivity.class);
+                    Log.d("Intent传入的参数是",resultID);
                     intent.putExtra("Name", resultID);//把食堂ID作为参数传入
                     startActivity(intent);
                 }

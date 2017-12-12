@@ -27,9 +27,6 @@ import java.util.Iterator;
  */
 public class SettingFragment extends Fragment implements NumberPicker.OnValueChangeListener, NumberPicker.OnScrollListener, NumberPicker.Formatter {
 
-    final static int MINMONEY = 3;
-    final static int MAXMONEY = 50;
-
     private View view;
     private SharedPreferences preferences;
 
@@ -116,10 +113,14 @@ public class SettingFragment extends Fragment implements NumberPicker.OnValueCha
             moneyPicker.setFormatter(this);
             moneyPicker.setOnValueChangedListener(this);
             moneyPicker.setOnScrollListener(this);
-            moneyPicker.setMaxValue(MAXMONEY);
-            moneyPicker.setMinValue(MINMONEY);
             moneyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         }
+
+        numberPickerArrayList.get(0).setMinValue(3);numberPickerArrayList.get(0).setMaxValue(15);//早餐的价格区间
+        numberPickerArrayList.get(1).setMinValue(5);numberPickerArrayList.get(1).setMaxValue(30);//午餐的价格区间
+        numberPickerArrayList.get(2).setMinValue(5);numberPickerArrayList.get(2).setMaxValue(30);//晚餐的价格区间
+
+
         numberPickerArrayList.get(0).setValue(preferences.getInt("moneyBreakfastChosen", 5));//早餐默认为5
         numberPickerArrayList.get(1).setValue(preferences.getInt("moneyLunchChosen", 10));//午饭默认为10
         numberPickerArrayList.get(2).setValue(preferences.getInt("moneyDinnerChosen", 12));//早餐默认为12

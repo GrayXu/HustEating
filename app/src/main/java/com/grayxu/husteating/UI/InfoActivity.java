@@ -33,7 +33,9 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
         Intent intent = getIntent();
         canteenID = intent.getStringExtra("Name");//餐厅的ID
+        Log.d("info onCreate","此时餐厅ID为"+canteenID+",它的index为"+Canteens.getCanteenIDs().indexOf(canteenID));
         String canteenName = Canteens.getCanteenNames().get(Canteens.getCanteenIDs().indexOf(canteenID));//餐厅的名字
+
         ((TextView) findViewById(R.id.titleTV)).setText(canteenName);
 
         PushManager.initSP(getSharedPreferences("MainActivity", MODE_PRIVATE));//方便内部获得键值对的信息
@@ -66,7 +68,7 @@ public class InfoActivity extends AppCompatActivity {
         //初始化布局管理器
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         foodAdapter = new FoodAdapter(foods);
         recyclerView.setAdapter(foodAdapter);//适配器装载

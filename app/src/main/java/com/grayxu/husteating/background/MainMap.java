@@ -38,7 +38,7 @@ public class MainMap {
 
     private static ArrayList<LatLng> locList = new ArrayList<>(Arrays.asList(new LatLng(30.511150, 114.419072), new LatLng(30.510734, 114.420424)));//批量添加位置
     //loclist里面保存的依次为东一食堂，东三食堂。
-    private static String[][] canteenNames = new String[][]{
+    private static String[][] canteenIDs = new String[][]{
             new String[]{"E11", "E12"},
             new String[]{"E3"}};
 
@@ -114,7 +114,7 @@ public class MainMap {
                     while (iterator.hasNext()) {
                         int tempID = (int) iterator.next();
                         if (tempID == viewInID) {
-                            intent.putExtra("Name", Canteens.getCanteenNames().get(Canteens.getButtonIDs().indexOf(tempID)));//直接打包食堂的名字，效率不高，但几十个绰绰有余（此处的入口是浮动窗口按钮
+                            intent.putExtra("Name", Canteens.getCanteenIDs().get(Canteens.getButtonIDs().indexOf(tempID)));//直接打包食堂的ID，效率不高，但几十个绰绰有余（此处的入口是浮动窗口按钮
                             break;
                         }
                     }
@@ -241,22 +241,23 @@ public class MainMap {
             }
         }
 
-        Log.d("getCanteenResultID", "获得的最近两个餐厅的Index为" + indexMin1 + "和" + indexMin2);
+        Log.d("getCanteenResultID", "获得的最近两个餐厅在canteenIDs ArrayList的Index为" + indexMin1 + "和" + indexMin2);
         if (indexMin1 == -1 || indexMin2 == -1) {
             return null;
         }
         ArrayList<String> namesNear = new ArrayList<>();
 
-        for (int i = 0; i < canteenNames[indexMin1].length; i++) {
-            namesNear.add(canteenNames[indexMin1][i]);
+        for (int i = 0; i < canteenIDs[indexMin1].length; i++) {
+            namesNear.add(canteenIDs[indexMin1][i]);
         }
-        for (int i = 0; i < canteenNames[indexMin2].length; i++) {
-            namesNear.add(canteenNames[indexMin2][i]);
+        for (int i = 0; i < canteenIDs[indexMin2].length; i++) {
+            namesNear.add(canteenIDs[indexMin2][i]);
 
         }
         //同距离评判逻辑暂时为随机摇筛子
         Random random = new Random();
         int randomNum = random.nextInt(namesNear.size());
+        Log.d("getCanteenResultID", "系统自动选择的食堂为"+namesNear.get(randomNum));
         return namesNear.get(randomNum);
     }
 

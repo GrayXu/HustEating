@@ -58,28 +58,31 @@ public class PushManager {
         String taste = preferences.getString("tasteChosen", "辣");
         //MeatIndex的上限设置为20，尽量不会让其超过
 
-        //TODO: 推荐算法实现位置
-        Log.i("getResult", "当前的时间是" + timeNow);
+        Log.v("getResult", "当前的时间是" + timeNow);
 
         timeNow = 700; //TODO: 开发过程中，在此处手动调整TimeNow的值
-
+        int moneyMax = -1;
         if (930 > timeNow && timeNow > 650){
             //早餐时间
             Log.i("getResult", "吃早餐");
-            int moneyMax = preferences.getInt("moneyBreakfastChosen", 5);
+            moneyMax = preferences.getInt("moneyBreakfastChosen", 5);
 
         } else if (1300 > timeNow && timeNow > 1050){
             //午餐时间
             Log.i("getResult", "吃午餐");
-            int moneyMax = preferences.getInt("moneyLunchChosen", 10);
+            moneyMax = preferences.getInt("moneyLunchChosen", 10);
 
         } else if (1900 > timeNow && timeNow > 1650) {
             //晚餐时间
             Log.i("getResult", "吃晚餐");
-            int moneyMax = preferences.getInt("moneyDinnerChosen", 12);
+            moneyMax = preferences.getInt("moneyDinnerChosen", 12);
 
         } else {//不是饭点时间
             allFoodList.clear();
+        }
+
+        if (moneyMax != -1){ //TODO: 推荐算法实现位置
+
         }
 
         return allFoodList;

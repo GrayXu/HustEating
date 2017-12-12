@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.grayxu.husteating.background.DataManager;
@@ -80,13 +83,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        PermissionTool.afterRequest(requestCode, permissions, grantResults);
-//    }
-
-
     /**
      * 初始化制作者信息包括反馈方式的弹出框
      */
@@ -125,13 +121,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setBackgroundColor(Color.parseColor(color));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Button butLogin = navigationView.getHeaderView(0).findViewById(R.id.buttonLogin);
+        butLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     /**
@@ -140,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initDB() {
         Log.i("initDB", "检查数据库");
         SharedPreferences preferences = getPreferences(0);
-        boolean isFirst = preferences.getBoolean("isFirst", false);
+        boolean isFirst = preferences.getBoolean("isFirst", true);
 
         if (isFirst) {
             Log.i("initDB", "初始化数据库");
@@ -154,12 +161,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -183,6 +190,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "已经复制下载链接到剪切板中", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
             builder.show();
+        } else if (id == R.id.nav_message) {
+            //做公告更新
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -227,9 +236,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        //??
-    }
+    public void onPointerCaptureChanged(boolean hasCapture) {}
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -240,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @AfterPermissionGranted(num)
     private void requireSomePermission() {
         String[] perms = {
-                // 把你想要申请的权限放进这里就行，注意用逗号隔开
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_PHONE_STATE,

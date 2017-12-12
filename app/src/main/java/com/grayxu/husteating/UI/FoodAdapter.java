@@ -1,19 +1,16 @@
 package com.grayxu.husteating.UI;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grayxu.husteating.R;
 import com.grayxu.husteating.background.Food;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * Created by Administrator on 2017/11/13.

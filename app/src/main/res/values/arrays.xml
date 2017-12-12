@@ -6,5 +6,11 @@
         <item>香</item>
         <item>甜</item>
     </string-array>
+    <string-array name="Province">
+        <item>福建省</item>
+    </string-array>
+    <string-array name="学院">
+        <item>计算机科学与技术</item>
+    </string-array>
 
 </resources>
