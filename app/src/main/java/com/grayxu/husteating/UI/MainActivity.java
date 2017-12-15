@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.grayxu.husteating.background.DataManager;
@@ -129,16 +130,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        Button butLogin = navigationView.getHeaderView(0).findViewById(R.id.buttonLogin);
-        butLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+
         navigationView.setNavigationItemSelectedListener(this);
 
+        SharedPreferences sp = getPreferences(MODE_PRIVATE);
+        boolean isLogin = sp.getBoolean("isLogin", false);
+        if (isLogin){
+            View headerLayout = navigationView.inflateHeaderView(R.layout.activity_login);
+            String name = sp.getString("name", null);
+            String email = sp.getString("name", null);
+            ((TextView) headerLayout.findViewById(R.id.TVmail)).setText(email);
+            ((TextView) headerLayout.findViewById(R.id.TVname)).setText(name);
+
+        }else{
+            View headerLayout = navigationView.inflateHeaderView(R.layout.main_nav_header_nologin);
+            Button butLogin = headerLayout.findViewById(R.id.buttonLogin);
+            butLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+        }
     }
 
     /**

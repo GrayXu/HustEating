@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="link">假的下载链接</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="mail_password">HUSTEATING410</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">邮箱</string>

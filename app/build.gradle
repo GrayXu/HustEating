@@ -36,4 +36,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'pub.devrel:easypermissions:0.4.2'
     compile files('libs/javacsv.jar')
+    implementation files('libs/mail.jar')
 }

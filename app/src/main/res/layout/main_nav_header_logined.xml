@@ -13,16 +13,16 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
+        android:id="@+id/TVname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="测试用户"
+        android:text="载入中..."
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/mailTV"
+        android:id="@+id/TVmail"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="grayxu@hust.edu.cn" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
