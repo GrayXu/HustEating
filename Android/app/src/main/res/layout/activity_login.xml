@@ -75,11 +75,11 @@
             <TextView
                 android:id="@+id/regsiterTV"
                 android:layout_width="87dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                android:layout_gravity="center"
                 android:gravity="center"
                 android:text="注册" />
 

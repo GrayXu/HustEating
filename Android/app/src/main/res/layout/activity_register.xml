@@ -68,7 +68,33 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:hint="六位数以上"
+                    android:inputType="textPassword" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定密码："
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/ETconfirmPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textPassword" />
             </LinearLayout>
 
             <LinearLayout
@@ -93,7 +119,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint=".将会发送验证码给这个邮箱"
+                    android:hint="将会发送验证码给这个邮箱"
                     android:inputType="textEmailAddress" />
             </LinearLayout>
 
@@ -115,7 +141,7 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/etCheckCode"
+                    android:id="@+id/ETCheckCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -140,27 +166,40 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:layout_width="12dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="男"
-                    android:textSize="18sp" />
+                <RadioGroup
+                    android:id="@+id/rgGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                <RadioButton
-                    android:layout_width="12dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:layout_weight="1"
-                    android:text="女"
-                    android:textSize="18sp" />
+                    <RadioButton
+                        android:id="@+id/rbMan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="男"
+                        android:textSize="18sp" />
+
+                    <RadioButton
+                        android:id="@+id/rbWoman"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_weight="1"
+                        android:text="女"
+                        android:textSize="18sp" />
+
+                </RadioGroup>
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="50dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -187,6 +226,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="150dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -218,7 +259,7 @@
         android:layout_width="121dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:text="确定" />
 
 </LinearLayout>

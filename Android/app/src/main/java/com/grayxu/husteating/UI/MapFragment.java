@@ -32,6 +32,7 @@ public class MapFragment extends Fragment {
         mapView = view.findViewById(R.id.map);
         initFastEat(view);
         if (mapView != null) {
+
             mapView.onCreate(savedInstanceState);// 此方法须覆写，虚拟机需要在很多情况下保存地图绘制的当前状态。
             MainMap.init(mapView, getActivity());
         }

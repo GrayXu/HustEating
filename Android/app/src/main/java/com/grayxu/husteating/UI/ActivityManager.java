@@ -20,6 +20,10 @@ public class ActivityManager {
 
     private static ActivityManager manager = new ActivityManager();
 
+    private ActivityManager(){
+        activityHashMap = new HashMap<>();
+    }
+
     public static ActivityManager getActivityManager(){
         return manager;
     }

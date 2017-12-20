@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        ActivityManager.getActivityManager().finishSplash();//finish前面的splash界面
         //动态申请所有所需要的敏感权限
         if (Build.VERSION.SDK_INT >= 23) {
             Log.i("onCreate", "系统为6.0及以上");
@@ -176,12 +176,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
