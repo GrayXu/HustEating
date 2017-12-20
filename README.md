@@ -2,7 +2,7 @@
 
 --------
 
-![LOGO](https://github.com/GrayXu/HustEating/raw/master/app/src/main/res/drawable/main.png)
+![LOGO](https://github.com/GrayXu/HustEating/raw/master/Android/app/src/main/res/drawable/main.png)
 
 这是一款根据用户喜好推荐食堂菜肴的移动应用。
 
