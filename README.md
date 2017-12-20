@@ -61,5 +61,5 @@ E-mail: grayxu@hust.edu.cn
 #2. 前后端交互逻辑：
 	前后端通过Socket传输json文件或csv文件进行数据沟通。总的来说，有三种数据传输需求：用户配置信息、食堂菜肴信息、评论信息。用户配置信息包括**用户的历史吃饭记录**以及**口味以及价格区间的偏好**，基本可以通过**json**满足键值对传输需求；食堂菜肴信息可以通过传输一个新的**csv**，让前端去完成更新本地的数据库；评论信息则通过多次的传输json文件来完成 **服务器端数据库的更新** 以及 **客户端从服务器端获得评论信息** 这两个功能。（*完成顺序即123*）。具体的格式见根目录的JSON_Sample文件夹。
 
-#3. 使用的开源库：
-	JavaCSV, EasyPermissions, LitePal, JavaMail.
+#3. 依赖第三方库：
+	JavaCSV, EasyPermissions, LitePal, JavaMail, android-gif-drawable, AMap.
