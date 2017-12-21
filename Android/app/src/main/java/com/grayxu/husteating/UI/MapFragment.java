@@ -58,7 +58,7 @@ public class MapFragment extends Fragment {
                 Log.d("FabButtonListener", "吃饭按钮被按下");
                 String resultID = MainMap.getCanteenResultID();//摇出的食堂结果（是一个食堂的ID）
                 if (resultID == null) { // 没有获取到有效的ID
-                    Toast.makeText(getActivity(), "没有定位权限", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "没有获取到你的位置信息", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(getActivity(), InfoActivity.class);
                     Log.d("Intent传入的参数是",resultID);

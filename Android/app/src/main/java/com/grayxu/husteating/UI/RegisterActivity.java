@@ -37,29 +37,35 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             if (msg.what == 1){
                 View focusView = null;
                 Log.d("handleMessage", "msg.arg1为"+msg.arg1);
-                switch (msg.arg1) {
-                    case 1:
-                        focusView = etName;
-                        etName.setError("名字太短了");
-                        break;
-                    case 2:
-                        focusView = etPassword;
-                        etPassword.setError("密码太短了");
-                        break;
-                    case 3:
-                        focusView = etConfirmPassword;
-                        etConfirmPassword.setError("两次输入的密码不同");
-                        break;
-                    case 4:
-                        focusView = etEmail;
-                        etEmail.setError("邮箱不合法");
-                        break;
-                    case 5:
-                        focusView = etCheckCode;
-                        etCheckCode.setError("验证码错误");
-                        break;
+                if (msg.arg2 == 0){
+                    switch (msg.arg1) {
+                        case 1:
+                            focusView = etName;
+                            etName.setError("名字太短了");
+                            break;
+                        case 2:
+                            focusView = etPassword;
+                            etPassword.setError("密码太短了");
+                            break;
+                        case 3:
+                            focusView = etConfirmPassword;
+                            etConfirmPassword.setError("两次输入的密码不同");
+                            break;
+                        case 4:
+                            focusView = etEmail;
+                            etEmail.setError("邮箱不合法");
+                            break;
+                        case 5:
+                            focusView = etCheckCode;
+                            etCheckCode.setError("验证码错误");
+                            break;
+                    }
+                    focusView.requestFocus();
                 }
-                focusView.requestFocus();
+                if (msg.arg2 == 1){//反馈出错信息
+                    Toast.makeText(RegisterActivity.this, "邮件发送失败，请检查网络", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
 
@@ -128,6 +134,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     mail.sendMail();
                 } catch (MessagingException e) {
                     Log.d("sendCode", "邮件发送失败");
+                    Message message = new Message();
+                    message.what = 1;
+                    message.arg2 = 2;
+                    handler.sendMessage(message);
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -228,15 +238,35 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             if (cancel) {
                 handler.sendMessage(message);
-            } else {//填写信息均正确，保存后退回到首页
-                SharedPreferences sp = getSharedPreferences("MainActivity", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("name", name);
-                editor.putString("email", email);
-                editor.apply();
-                ActivityManager.getActivityManager().finishLoginRegister();
+            } else {//填写信息格式无误，进入保存逻辑
+                //检查验证码是否正确
+                if (checkCode.equals(getCode(email))){
+                    SharedPreferences sp = getSharedPreferences("MainActivity", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("name", name);
+                    editor.putString("email", email);
+                    editor.putBoolean("isLogin", true);
+                    editor.apply();
+                    ActivityManager.getActivityManager().finishLoginRegister();
+                }
             }
 
+        }
+
+        /**
+         * 获取由邮箱名计算获得的验证码
+         * @return 一个六位数的验证码
+         */
+        private String getCode(String email) {
+
+            int hashcode = email.hashCode();//s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+            hashcode = Math.abs(hashcode) * 410 % 1000000;
+
+            while (hashcode < 100000){
+                hashcode = hashcode * 6;
+            }
+
+            return String.valueOf(hashcode);
         }
     }
 }

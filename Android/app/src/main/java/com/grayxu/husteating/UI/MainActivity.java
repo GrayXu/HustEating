@@ -20,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -39,12 +38,14 @@ import pub.devrel.easypermissions.EasyPermissions;
 /**
  * 本类为主活动，管理这个界面下多碎片的切换，以及后台的操作
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks, View.OnLongClickListener {
 
     private FragmentTransaction fragmentTransaction;
     private SettingFragment settingFragment;
     private MapFragment mapFragment;
-    private AlertDialog.Builder builder;
+    private AlertDialog.Builder feedbackBuilder;
+    private AlertDialog.Builder userInfoBuilder;
+    private String name;
     private static final int num = 123;
 
     private Toolbar toolbar;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initDB();//检查是否第一次打开本程序，若是则初始化数据库 (应该有权限后才能初始化？？
 
-        initDialog();//初始化制作者信息包括反馈方式的弹出框
+        initFeedBackDialog();//初始化制作者信息包括反馈方式的弹出框
 
         fragmentTransaction = getFragmentManager().beginTransaction();
         mapFragment = new MapFragment();
@@ -85,18 +86,76 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     /**
-     * 初始化制作者信息包括反馈方式的弹出框
+     * 初始化制作者信息包括反馈方式的对话框
      */
-    private void initDialog() {
-        builder = new AlertDialog.Builder(this);
-        builder.setTitle("HUST Eating");
-        builder.setMessage("Email:  grayxu@hust.edu.cn\n欢迎使用者反馈任何信息" + new String(Character.toChars(0x1F64F)));
-        builder.setCancelable(false);
-        builder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+    private void initFeedBackDialog() {
+        feedbackBuilder = new AlertDialog.Builder(this);
+        feedbackBuilder.setTitle("HUST Eating");
+        feedbackBuilder.setMessage("Email:  grayxu@hust.edu.cn\n欢迎使用者反馈任何信息" + new String(Character.toChars(0x1F64F)));
+        feedbackBuilder.setCancelable(false);
+        feedbackBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
         });
+    }
+
+    /**
+     * 初始化用户查看自己信息的对话框
+     */
+    private void initUserInfoDialog(){
+        userInfoBuilder = new AlertDialog.Builder(this);
+        userInfoBuilder.setTitle(this.name+"的个人信息");
+//        userInfoBuilder.setMessage("Email:  grayxu@hust.edu.cn\n欢迎使用者反馈任何信息" + new String(Character.toChars(0x1F64F)));
+//        userInfoBuilder.setCancelable(false);
+//        userInfoBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//            }
+//        });
+    }
+
+    /**
+     * 检查登录状态，并且更新drawer head
+     */
+    private void checkLogin(NavigationView view) {
+        SharedPreferences sp = getPreferences(MODE_PRIVATE);
+        boolean isLogin = sp.getBoolean("isLogin", false);
+        if (isLogin) {
+            //若drawer head不是登录状态才重新加载布局
+            View headerLayout;
+            if (view.findViewById(R.id.TVNavMail) == null) {//如果在当前的view里面找不到这个TV就说明没有加载起来
+                headerLayout = view.inflateHeaderView(R.layout.main_nav_header_logined);
+                headerLayout.findViewById(R.id.LLlogined).setOnLongClickListener(this);//添加长按监听器
+                initUserInfoDialog();
+                Log.d("checkLogin", "抽屉头更新为登录状态");
+            }else{
+                headerLayout = view.getHeaderView(0);
+            }
+            String name = sp.getString("name", null);
+            this.name = name;
+            String email = sp.getString("name", null);
+            ((TextView) headerLayout.findViewById(R.id.TVmail)).setText(email);
+            ((TextView) headerLayout.findViewById(R.id.TVname)).setText(name);
+
+        } else {
+            View headerLayout;
+            if (view.findViewById(R.id.buttonLogin) == null){
+                headerLayout = view.inflateHeaderView(R.layout.main_nav_header_nologin);
+                Log.d("checkLogin", "抽屉头更新为未登录状态");
+            }else{
+                headerLayout = view.getHeaderView(0);
+            }
+
+            Button butLogin = headerLayout.findViewById(R.id.buttonLogin);
+            butLogin.setOnClickListener(new View.OnClickListener() {//登录按钮
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     /**
@@ -133,27 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreferences sp = getPreferences(MODE_PRIVATE);
-        boolean isLogin = sp.getBoolean("isLogin", false);
-        if (isLogin){
-            View headerLayout = navigationView.inflateHeaderView(R.layout.activity_login);
-            String name = sp.getString("name", null);
-            String email = sp.getString("name", null);
-            ((TextView) headerLayout.findViewById(R.id.TVmail)).setText(email);
-            ((TextView) headerLayout.findViewById(R.id.TVname)).setText(name);
-
-        }else{
-            View headerLayout = navigationView.inflateHeaderView(R.layout.main_nav_header_nologin);
-            Button butLogin = headerLayout.findViewById(R.id.buttonLogin);
-            butLogin.setOnClickListener(new View.OnClickListener() {//登录按钮
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                }
-            });
-
-        }
+        checkLogin(navigationView);//检查登录状态，并且更新drawer head
     }
 
     /**
@@ -176,9 +215,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    /**
+     * 从外部回来的时候检查一次登录状态（防止从注册界面返回导致登录状态不刷新）
+     */
     @Override
     protected void onResume() {
         super.onResume();
+        checkLogin((NavigationView) findViewById(R.id.nav_view));
     }
 
     @Override
@@ -202,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             cm.setPrimaryClip(ClipData.newPlainText("newPlainTextLabel", link));
             Toast.makeText(this, "已经复制下载链接到剪切板中", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
-            builder.show();
+            feedbackBuilder.show();
         } else if (id == R.id.nav_message) {
             //做公告更新
         }
@@ -249,7 +292,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {}
+    public void onPointerCaptureChanged(boolean hasCapture) {
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -272,5 +316,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             EasyPermissions.requestPermissions(this, "",
                     num, perms);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        int id = view.getId();
+        if (id == R.id.LLlogined){
+            userInfoBuilder.show();
+            return true;
+        }
+        return false;
     }
 }
