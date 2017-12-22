@@ -1,7 +1,7 @@
 {
    "task": "addUserAsk",
    "data": {
-      "id": "gray",
+      "name": "gray",
       "password" : "410410410"
       "email": "285293728@qq.com",
       "major": "计算机科学与技术",
