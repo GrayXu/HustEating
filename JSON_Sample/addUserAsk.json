@@ -1,6 +1,7 @@
 {
    "task": "addUserAsk",
    "data": {
+      "sex": "男"
       "name": "gray",
       "password" : "410410410"
       "email": "285293728@qq.com",
