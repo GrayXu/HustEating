@@ -1,10 +1,10 @@
 {
    "task": "addUserAsk",
    "data": {
-      "sex": "男"
       "name": "gray",
       "password" : "410410410"
       "email": "285293728@qq.com",
+      "sex": "男",
       "major": "计算机科学与技术",
       "province": "福建"
     }
