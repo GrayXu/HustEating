@@ -34,18 +34,40 @@ public class SplashActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        handler = new Handler();
-        // 延迟SPLASH_DISPLAY_LENGHT时间然后跳转到MainActivity
-        handler.postDelayed(new Runnable() {
+        Intent intent = getIntent();
+        final String canteenID = intent.getStringExtra("Name");//餐厅的ID
+        String task = intent.getStringExtra("task");
 
-            @Override
-            public void run() {
-                Intent intent = new Intent(SplashActivity.this,
-                        MainActivity.class);
-                startActivity(intent);
-                SplashActivity.this.finish();
-            }
-        }, SPLASH_DISPLAY_LENGHT);
+        if (task != null){
+            handler = new Handler();
+            // 延迟SPLASH_DISPLAY_LENGHT时间然后跳转到MainActivity
+            handler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    Intent intent = new Intent(SplashActivity.this,
+                            InfoActivity.class);
+                    intent.putExtra("Name",canteenID);
+                    startActivity(intent);
+                    SplashActivity.this.finish();
+                }
+            }, SPLASH_DISPLAY_LENGHT);
+
+        }else{
+            handler = new Handler();
+            // 延迟SPLASH_DISPLAY_LENGHT时间然后跳转到MainActivity
+            handler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    Intent intent = new Intent(SplashActivity.this,
+                            MainActivity.class);
+                    startActivity(intent);
+                    SplashActivity.this.finish();
+                }
+            }, SPLASH_DISPLAY_LENGHT);
+        }
+
     }
 
 }

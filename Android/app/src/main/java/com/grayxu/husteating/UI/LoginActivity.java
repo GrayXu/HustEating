@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.grayxu.husteating.R;
+import com.grayxu.husteating.background.UserStatus;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -201,6 +202,10 @@ public class LoginActivity extends AppCompatActivity{
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+            UserStatus userStatus = UserStatus.getUserStatus();
+            userStatus.setEmail(mEmailView.getText().toString());
+            //TODO: 登录的时候应该有服务器请求
+            userStatus.setLogin(true);
         }
     }
 

@@ -37,11 +37,20 @@ import java.util.Random;
 
 public class MainMap {
 
-    private static ArrayList<LatLng> locList = new ArrayList<>(Arrays.asList(new LatLng(30.511150, 114.419072), new LatLng(30.510734, 114.420424)));//批量添加位置
-    //loclist里面保存的依次为东一食堂，东三食堂。
+    private static ArrayList<LatLng> locList = new ArrayList<>(Arrays.asList(
+            new LatLng(30.511150, 114.419072),
+            new LatLng(30.510734, 114.420424),
+            new LatLng(30.510835, 114.419587),
+            new LatLng(30.514500, 114.417226),
+            new LatLng(30.514149, 114.405714)));//批量添加位置
+
+    //loclist里面保存的依次为东一食堂，东三食堂，紫荆园。
     private static String[][] canteenIDs = new String[][]{
             new String[]{"E11", "E12"},
-            new String[]{"E3"}};
+            new String[]{"E3"},
+            new String[]{"Z"},
+            new String[]{"JX"},
+            new String[]{"Z"}};
 
 
     private static Activity activity;
@@ -60,11 +69,14 @@ public class MainMap {
         activity = activityIn;
         aMap = mapView.getMap();
 
-        final ArrayList<Marker> markerList = new ArrayList<>(Arrays.asList(
-                aMap.addMarker(new MarkerOptions().position(locList.get(0))),
-                aMap.addMarker(new MarkerOptions().position(locList.get(1)))));//Marker的列表
 
-        final ArrayList<Integer> layoutIDs = new ArrayList<>(Arrays.asList(R.layout.window_e1, R.layout.window_e3));//Marker对应的layout文件的列表
+        final ArrayList<Marker> markerList = new ArrayList<>();
+        for (LatLng i:
+             locList) {
+            markerList.add(aMap.addMarker(new MarkerOptions().position(i)));//Marker的列表
+        }
+
+        final ArrayList<Integer> layoutIDs = new ArrayList<>(Arrays.asList(R.layout.window_e1, R.layout.window_e3,R.layout.window_z, R.layout.window_jx, R.layout.window_w1));//Marker对应的layout文件的列表
 
         aMap.setMyLocationEnabled(true);
         initBlueDot(aMap);//初始化蓝点
@@ -108,7 +120,7 @@ public class MainMap {
                 public void onClick(View view) {
                     int viewInID = view.getId();
 
-                    Intent intent = new Intent(activity, InfoActivity.class);
+                    Intent intent = new Intent(activity, SplashActivity.class);
 
 //                    Iterator iterator = buttonIDs.iterator();
                     Iterator iterator = Canteens.getButtonIDs().iterator();
@@ -116,6 +128,7 @@ public class MainMap {
                         int tempID = (int) iterator.next();
                         if (tempID == viewInID) {
                             intent.putExtra("Name", Canteens.getCanteenIDs().get(Canteens.getButtonIDs().indexOf(tempID)));//直接打包食堂的ID，效率不高，但几十个绰绰有余（此处的入口是浮动窗口按钮
+                            intent.putExtra("task", "info");
                             break;
                         }
                     }
@@ -242,6 +255,9 @@ public class MainMap {
             }
         }
 
+        /**
+         * 应该调整为500m内的食堂来roll
+         */
         Log.d("getCanteenResultID", "获得的最近两个餐厅在canteenIDs ArrayList的Index为" + indexMin1 + "和" + indexMin2);
         if (indexMin1 == -1 || indexMin2 == -1) {
             return null;
@@ -258,7 +274,7 @@ public class MainMap {
         //同距离评判逻辑暂时为随机摇筛子
         Random random = new Random();
         int randomNum = random.nextInt(namesNear.size());
-        Log.d("getCanteenResultID", "系统自动选择的食堂为"+namesNear.get(randomNum));
+        Log.d("getCanteenResultID", "系统自动选择的食堂为" + namesNear.get(randomNum));
         return namesNear.get(randomNum);
     }
 

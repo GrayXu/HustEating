@@ -9,7 +9,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 本类负责推荐信息的输出，以及推荐后的衍生操作（包括存储历史记录）
@@ -40,8 +43,7 @@ public class PushManager {
      * 获得推荐的结果
      *
      * @param allFoodList 传入的所有符合条件的食物
-     * @param timeNow 现在的时间
-     *
+     * @param timeNow     现在的时间
      * @return 最后确定推荐的食物列表
      */
     public List<Food> getResult(List<Food> allFoodList, int timeNow) {
@@ -60,14 +62,14 @@ public class PushManager {
 
         Log.v("getResult", "当前的时间是" + timeNow);
 
-        timeNow = 700; //TODO: 开发过程中，在此处手动调整TimeNow的值
+//        timeNow = 1200; //TODO: 开发过程中，在此处手动调整TimeNow的值
         int moneyMax = -1;
-        if (930 > timeNow && timeNow > 650){
+        if (930 > timeNow && timeNow > 650) {
             //早餐时间
             Log.i("getResult", "吃早餐");
             moneyMax = preferences.getInt("moneyBreakfastChosen", 5);
 
-        } else if (1300 > timeNow && timeNow > 1050){
+        } else if (1300 > timeNow && timeNow > 1050) {
             //午餐时间
             Log.i("getResult", "吃午餐");
             moneyMax = preferences.getInt("moneyLunchChosen", 10);
@@ -81,19 +83,57 @@ public class PushManager {
             allFoodList.clear();
         }
 
-        if (moneyMax != -1){ //TODO: 推荐算法实现位置
+        List<Food> recommandFoodList = new ArrayList<>();
+        if (moneyMax != -1) { //TODO: 推荐算法实现位置
+//            Iterator<Food> i = allFoodList.iterator();
+            boolean haveStable = false;
+            int moneySpend = 0;
+//            while (i.hasNext()){
+//                Food food = i.next();
+//                food.getIsStaple();
+//            }
+//            Random random = new Random();
+//            random.nextInt(allFoodList.size());
+
+            ArrayList<Integer> indexList = getRandomIndex(allFoodList.size());
+            for (Integer i :
+                    indexList) {
+
+                Food food = allFoodList.get(i);
+                if (food.getIsStaple() == 1) {//是主食
+                    if (!haveStable) {
+                        recommandFoodList.add(food);
+                        moneySpend += food.getPrice();
+                    }
+                } else {
+                    if (food.getPrice() < moneyMax - moneySpend){
+                        recommandFoodList.add(food);
+                    }
+                }
+
+            }
 
         }
 
-        return allFoodList;
+        return recommandFoodList;
     }
 
     /**
-     * 返回已经确定要吃的东西
+     * 返回已经确定要吃的东西,并存入历史记录中
      *
      * @param foodList
      */
     public void confirmFood(ArrayList<Food> foodList) {
         //update local database
     }
+
+    private ArrayList<Integer> getRandomIndex(int size) {
+        ArrayList randomNums = new ArrayList();
+        for (int i = 0; i < size; i++) {
+            randomNums.add(i);
+        }
+        Collections.shuffle(randomNums);
+        return randomNums;
+    }
+
 }

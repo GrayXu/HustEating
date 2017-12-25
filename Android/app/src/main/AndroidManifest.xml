@@ -16,6 +16,8 @@
     <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -29,8 +31,7 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.MainActivity">
-        </activity>
+        <activity android:name=".UI.MainActivity"></activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -40,14 +41,18 @@
 
         <activity
             android:name=".UI.InfoActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".UI.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:multiprocess="true" />
         <activity
             android:name=".UI.RegisterActivity"
+            android:multiprocess="true"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".UI.SplashActivity"
+        <activity
+            android:name=".UI.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

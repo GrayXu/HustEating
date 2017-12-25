@@ -32,10 +32,11 @@ public class MapFragment extends Fragment {
         mapView = view.findViewById(R.id.map);
         initFastEat(view);
         if (mapView != null) {
-
             mapView.onCreate(savedInstanceState);// 此方法须覆写，虚拟机需要在很多情况下保存地图绘制的当前状态。
             MainMap.init(mapView, getActivity());
         }
+
+
         return view;
     }
 
@@ -60,9 +61,10 @@ public class MapFragment extends Fragment {
                 if (resultID == null) { // 没有获取到有效的ID
                     Toast.makeText(getActivity(), "没有获取到你的位置信息", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(getActivity(), InfoActivity.class);
+                    Intent intent = new Intent(getActivity(), SplashActivity.class);
                     Log.d("Intent传入的参数是",resultID);
                     intent.putExtra("Name", resultID);//把食堂ID作为参数传入
+                    intent.putExtra("task", "info");//把食堂ID作为参数传入
                     startActivity(intent);
                 }
             } else if (view.getId() == R.id.ButtonLoc){

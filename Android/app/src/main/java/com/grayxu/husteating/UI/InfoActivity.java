@@ -7,6 +7,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +24,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-public class InfoActivity extends AppCompatActivity {
+public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String canteenID;
     private FoodAdapter foodAdapter;
@@ -59,6 +60,8 @@ public class InfoActivity extends AppCompatActivity {
                 show(foodsResult);//展示推荐的食物信息
             }
         }
+
+        findViewById(R.id.ButtonRe).setOnClickListener(this);
     }
 
 
@@ -75,4 +78,12 @@ public class InfoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.putExtra("Name", canteenID);
+        intent.putExtra("task", "info");//把食堂ID作为参数传入
+        finish();
+        startActivity(intent);
+    }
 }

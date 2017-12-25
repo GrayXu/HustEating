@@ -12,9 +12,9 @@ import java.util.Arrays;
 
 public class Canteens {
 
-    private static ArrayList<String> canteenIDs = new ArrayList<>(Arrays.asList("E11", "E12", "E3"));
-    private static ArrayList<String> canteenNames = new ArrayList<>(Arrays.asList("东一食堂一楼", "东一食堂二楼", "东三食堂"));
-    private static ArrayList<Integer> buttonIDs = new ArrayList<>(Arrays.asList(R.id.buttonE11, R.id.buttonE12, R.id.buttonE3));//统一管理添加，方便遍历查找
+    private static ArrayList<String> canteenIDs = new ArrayList<>(Arrays.asList("E11", "E12", "E3","Z"));
+    private static ArrayList<String> canteenNames = new ArrayList<>(Arrays.asList("东一食堂一楼", "东一食堂二楼", "东三食堂", "紫荆园","集贤楼","西一食堂一楼"));
+    private static ArrayList<Integer> buttonIDs = new ArrayList<>(Arrays.asList(R.id.buttonE11, R.id.buttonE12, R.id.buttonE3, R.id.buttonZ, R.id.buttonJX, R.id.buttonW1));//统一管理添加，方便遍历查找
 
     public static ArrayList<String> getCanteenNames() {
         return canteenNames;

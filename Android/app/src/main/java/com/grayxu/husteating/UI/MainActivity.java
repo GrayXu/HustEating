@@ -20,17 +20,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.grayxu.husteating.background.DataManager;
 import com.grayxu.husteating.R;
+import com.grayxu.husteating.background.Mail;
+import com.grayxu.husteating.background.UserStatus;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import javax.mail.MessagingException;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -43,9 +51,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FragmentTransaction fragmentTransaction;
     private SettingFragment settingFragment;
     private MapFragment mapFragment;
+
     private AlertDialog.Builder feedbackBuilder;
     private AlertDialog.Builder userInfoBuilder;
+    private AlertDialog.Builder newsBuilder;
+    private AlertDialog feedbackDialog;
+    private AlertDialog userInfoDialog;
+    private AlertDialog newsDialog;
+
+
     private String name;
+    private String email;
     private static final int num = 123;
 
     private Toolbar toolbar;
@@ -54,11 +70,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return toolbar;
     }
 
+    /**
+     *
+     */
+    private void initUserStatus() {
+        SharedPreferences sp = getPreferences(MODE_PRIVATE);
+        this.name = sp.getString("name", "载入中...");
+        this.email = sp.getString("email", null);
+        UserStatus status = UserStatus.getUserStatus();
+        status.setName(name);
+        status.setEmail(email);
+        status.setLogin(sp.getBoolean("isLogin", false));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         ActivityManager.getActivityManager().finishSplash();//finish前面的splash界面
+
+        initUserStatus();
         //动态申请所有所需要的敏感权限
         if (Build.VERSION.SDK_INT >= 23) {
             Log.i("onCreate", "系统为6.0及以上");
@@ -72,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initDB();//检查是否第一次打开本程序，若是则初始化数据库 (应该有权限后才能初始化？？
 
         initFeedBackDialog();//初始化制作者信息包括反馈方式的弹出框
+        initNewsInfoDialog();//初始化消息对话框
 
         fragmentTransaction = getFragmentManager().beginTransaction();
         mapFragment = new MapFragment();
@@ -82,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
 
         toolbar.setTitle("食堂地图");
+
     }
 
 
@@ -90,12 +122,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void initFeedBackDialog() {
         feedbackBuilder = new AlertDialog.Builder(this);
-        feedbackBuilder.setTitle("HUST Eating");
-        feedbackBuilder.setMessage("Email:  grayxu@hust.edu.cn\n欢迎使用者反馈任何信息" + new String(Character.toChars(0x1F64F)));
-        feedbackBuilder.setCancelable(false);
-        feedbackBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+        feedbackBuilder.setTitle("欢迎使用者反馈任何信息" + new String(Character.toChars(0x1F64F)));
+
+        final EditText et = new EditText(this);
+        feedbackBuilder.setView(et);
+        feedbackBuilder.setCancelable(true);
+        feedbackBuilder.setPositiveButton("发送", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                UserStatus status = UserStatus.getUserStatus();
+                final Mail mail = new Mail(status.getName(), status.getEmail(), getString(R.string.mail_password));
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mail.sendFeedBackMail(et.getText().toString());
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (MessagingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+                Toast.makeText(MainActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -103,47 +152,104 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * 初始化用户查看自己信息的对话框
      */
-    private void initUserInfoDialog(){
+    private void initUserInfoDialog() {
         userInfoBuilder = new AlertDialog.Builder(this);
-        userInfoBuilder.setTitle(this.name+"的个人信息");
+//        userInfoBuilder.setTitle(UserStatus.getUserStatus().getName() + "的个人信息");
 //        userInfoBuilder.setMessage("Email:  grayxu@hust.edu.cn\n欢迎使用者反馈任何信息" + new String(Character.toChars(0x1F64F)));
-//        userInfoBuilder.setCancelable(false);
-//        userInfoBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//            }
-//        });
+        userInfoBuilder.setCancelable(true);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View layoutInside = inflater.inflate(R.layout.user_info, null);
+        userInfoBuilder.setView(layoutInside);
+        final UserStatus userStatus = UserStatus.getUserStatus();
+        ((TextView) layoutInside.findViewById(R.id.TVInfoName)).setText(userStatus.getName());
+        ((TextView) layoutInside.findViewById(R.id.TVInfoSex)).setText(userStatus.getSex());
+        ((TextView) layoutInside.findViewById(R.id.TVInfoMajor)).setText(userStatus.getMajor());
+        ((TextView) layoutInside.findViewById(R.id.TVInfoPro)).setText(userStatus.getProvince());
+        ((TextView) layoutInside.findViewById(R.id.TVInfoEmail)).setText(userStatus.getEmail());
+        layoutInside.findViewById(R.id.BTLogOut).setOnClickListener(new View.OnClickListener() {//LOG OUT
+            @Override
+            public void onClick(View view) {
+                userStatus.clean();//清空数据
+                updateDrawerHead((NavigationView) findViewById(R.id.nav_view));
+                userInfoDialog.dismiss();
+            }
+        });
     }
 
     /**
-     * 检查登录状态，并且更新drawer head
+     * 公告板的builder
+     * TODO:消息应该实时从服务器异步加载出来
      */
-    private void checkLogin(NavigationView view) {
-        SharedPreferences sp = getPreferences(MODE_PRIVATE);
-        boolean isLogin = sp.getBoolean("isLogin", false);
+    private void initNewsInfoDialog() {
+        newsBuilder = new AlertDialog.Builder(this);
+//        newsBuilder.setTitle("输入IP后空格再输入端口");
+        newsBuilder.setTitle("公告消息");
+
+        newsBuilder.setMessage("暂无公告消息，本版本仍在进行内测。");
+//        feedbackBuilder.setCancelable(true);
+//        final EditText etIP = new EditText(this);
+//        newsBuilder.setView(etIP);
+//        newsBuilder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//
+//            public void onClick(DialogInterface dialog, int which) {
+//                SharedPreferences.Editor editor = getSharedPreferences("MainActivity", MODE_PRIVATE).edit();
+//                String input = etIP.getText().toString();
+//                String inputs[] = input.split(" ");
+//                String IP = inputs[0];
+//                String port = inputs[1];
+//                editor.putString("IP", IP);
+//                editor.putString("port", port);
+//                editor.commit();
+//                Toast.makeText(MainActivity.this, "IP:" + IP + " port:" + port, Toast.LENGTH_SHORT).show();
+//            }
+//
+//        });
+
+    }
+
+    /**
+     * 更新drawer head(通过检查更新状态)
+     */
+    private void updateDrawerHead(NavigationView view) {
+        Log.d("updateDrawerHead", "开始检查登录状态，并可能装填head nav view");
+//        SharedPreferences sp = getPreferences(MODE_PRIVATE);
+        UserStatus userStatus = UserStatus.getUserStatus();
+        boolean isLogin = userStatus.isLogin();
+        Log.d("updateDrawerHead", "isLogin 为 " + isLogin);
+        View headNavNow = view.getHeaderView(0);
+
         if (isLogin) {
             //若drawer head不是登录状态才重新加载布局
             View headerLayout;
-            if (view.findViewById(R.id.TVNavMail) == null) {//如果在当前的view里面找不到这个TV就说明没有加载起来
+            if (headNavNow.findViewById(R.id.TVNavMail) == null) {
+                view.removeHeaderView(headNavNow);
                 headerLayout = view.inflateHeaderView(R.layout.main_nav_header_logined);
+                UserStatus status = UserStatus.getUserStatus();
+                this.name = status.getName();
+                this.email = status.getName();
                 headerLayout.findViewById(R.id.LLlogined).setOnLongClickListener(this);//添加长按监听器
                 initUserInfoDialog();
-                Log.d("checkLogin", "抽屉头更新为登录状态");
-            }else{
+                Log.d("updateDrawerHead", "抽屉头更新为登录状态");
+            } else {
                 headerLayout = view.getHeaderView(0);
             }
-            String name = sp.getString("name", null);
+            String name = userStatus.getName();
             this.name = name;
-            String email = sp.getString("name", null);
-            ((TextView) headerLayout.findViewById(R.id.TVmail)).setText(email);
-            ((TextView) headerLayout.findViewById(R.id.TVname)).setText(name);
+            String email = userStatus.getEmail();
+            this.email = email;
+            ((TextView) headerLayout.findViewById(R.id.TVNavMail)).setText(email);
+            ((TextView) headerLayout.findViewById(R.id.TVNavName)).setText(name);
 
         } else {
             View headerLayout;
-            if (view.findViewById(R.id.buttonLogin) == null){
+            if (headNavNow.findViewById(R.id.buttonLogin) == null) {
+                saveFromUserStatus();
+                view.removeHeaderView(headNavNow);
                 headerLayout = view.inflateHeaderView(R.layout.main_nav_header_nologin);
-                Log.d("checkLogin", "抽屉头更新为未登录状态");
-            }else{
+                Log.d("updateDrawerHead", "抽屉头更新为未登录状态");
+            } else {
                 headerLayout = view.getHeaderView(0);
             }
 
@@ -165,9 +271,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+//        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         //初始化的时候载入toolBar的颜色
-        String tasteChosen = preferences.getString("tasteChosen", "辣");
+        String tasteChosen = getSharedPreferences("MainActivity", MODE_PRIVATE).getString("tasteChosen", "辣");
         String color = "0";
         if (tasteChosen.equals("辣")) {
             color = "#FF0000";
@@ -192,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        checkLogin(navigationView);//检查登录状态，并且更新drawer head
+        navigationView.inflateHeaderView(R.layout.main_nav_header_nologin);//预加载一个未登录的界面，在onResume的时候会重新检查
     }
 
     /**
@@ -220,8 +326,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     protected void onResume() {
+        Log.d("onResume", "onResume");
+        updateDrawerHead((NavigationView) findViewById(R.id.nav_view));
         super.onResume();
-        checkLogin((NavigationView) findViewById(R.id.nav_view));
     }
 
     @Override
@@ -239,14 +346,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragmentTransaction.commit();
             toolbar.setTitle("用户设置");
         } else if (id == R.id.nav_share) {
-
             String link = getString(R.string.link);
             ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setPrimaryClip(ClipData.newPlainText("newPlainTextLabel", link));
-            Toast.makeText(this, "已经复制下载链接到剪切板中", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "已经复制本应用的最新版下载链接到剪切板中", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
-            feedbackBuilder.show();
+            if (feedbackDialog == null) {
+                feedbackDialog = feedbackBuilder.show();
+            } else {
+                feedbackDialog.show();
+            }
         } else if (id == R.id.nav_message) {
+            if (newsDialog == null) {
+                newsDialog = newsBuilder.show();
+            } else {
+                newsDialog.show();
+            }
             //做公告更新
         }
 
@@ -307,6 +422,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.WRITE_SETTINGS
         };
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
@@ -321,10 +437,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onLongClick(View view) {
         int id = view.getId();
-        if (id == R.id.LLlogined){
-            userInfoBuilder.show();
+        if (id == R.id.LLlogined) {
+            userInfoDialog = userInfoBuilder.show();
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        saveFromUserStatus();
+        super.onDestroy();
+    }
+
+    private void saveFromUserStatus(){
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        UserStatus userStatus = UserStatus.getUserStatus();
+        editor.putString("name", userStatus.getName());
+        editor.putString("email", userStatus.getEmail());
+        editor.putBoolean("isLogin", userStatus.isLogin());
+        Log.i("onDestroy", "保存UserStatus name:" + userStatus.getName() + " email:" + userStatus.getEmail() + " isLogin:" + userStatus.isLogin());
+        editor.apply();
     }
 }
